@@ -64,7 +64,7 @@ def check_password(password: Optional[str] = None, password_hash: Optional[str] 
 def len_letters(string):
     counter = 0
     for let in string.lower():
-        if let in "ąęćłńóśżź" or (let>"a" and let<"z"):
+        if let in "ąęćłńóśżź" or (let >= "a" and let <= "z"):
             counter += 1
     return counter
 
