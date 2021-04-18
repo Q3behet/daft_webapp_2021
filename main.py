@@ -71,9 +71,8 @@ def len_letters(string):
 
 @app.post("/register", status_code=201)
 def register(user: User):
-    reg_tmp = datetime.today()
-    reg_date = reg_tmp.strftime("%Y-%m-%d")
-    vac_date = reg_tmp + timedelta(len_letters(user.name) + len_letters(user.surname))
+    reg_date = datetime.now().strftime("%Y-%m-%d")
+    vac_date = datetime.strptime(reg_date, "%Y-%m-%d") + timedelta(len_letters(user.name) + len_letters(user.surname))
     vac_date = vac_date.strftime("%Y-%m-%d")
     reg_user = {
         "id": app.user_id,
