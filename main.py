@@ -8,6 +8,7 @@ from pydantic import BaseModel
 app = FastAPI()
 app.counter = 0
 app.user_id = 1
+app.patients = []
 
 
 class User(BaseModel):
@@ -81,5 +82,17 @@ def register(user: User):
         "register_date": reg_date,
         "vaccination_date": vac_date
     }
+    app.patients.append(reg_user)
+    print(app.patients)
     app.user_id += 1
     return reg_user
+
+
+#1.5
+@app.get("/patient/{id}")
+def get_user(id: int):
+    if id < 1:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+    elif id > len(app.patients):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    return app.patients[id-1]
