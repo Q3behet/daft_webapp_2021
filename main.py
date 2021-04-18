@@ -69,7 +69,7 @@ def len_letters(string):
     return counter
 
 
-@app.post("/register")
+@app.post("/register", status_code=201)
 def register(user: User):
     reg_date = datetime.today()
     reg_date = reg_date.strftime("%Y-%m-%d")
