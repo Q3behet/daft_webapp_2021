@@ -1,9 +1,18 @@
 from fastapi import FastAPI, Request, Response, status, HTTPException
 from typing import Optional
 import hashlib
+from datetime import datetime, timedelta
+
+from pydantic import BaseModel
 
 app = FastAPI()
 app.counter = 0
+app.user_id = 1
+
+
+class User(BaseModel):
+    name: str
+    surname: str
 
 
 @app.get("/counter")
@@ -49,3 +58,29 @@ def method_options():
 def check_password(password: Optional[str] = None, password_hash: Optional[str] = None):
     if password_hash != hashlib.sha512(str(password).encode("utf-8")).hexdigest() or not password or not password_hash:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+
+# 1.4
+def len_letters(string):
+    counter = 0
+    for let in string.lower():
+        if let in "ąęćłńóśżź" or (let>"a" and let<"z"):
+            counter += 1
+    return counter
+
+
+@app.post("/register")
+def register(user: User):
+    reg_date = datetime.today()
+    reg_date = reg_date.strftime("%Y-%m-%d")
+    vac_date = datetime.today() + timedelta(len_letters(user.name) + len_letters(user.surname))
+    vac_date = vac_date.strftime("%Y-%m-%d")
+    reg_user = {
+        "id": app.user_id,
+        "name": user.name,
+        "surname": user.surname,
+        "register_date": reg_date,
+        "vaccination_date": vac_date
+    }
+    app.user_id += 1
+    return reg_user
